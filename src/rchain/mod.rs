@@ -52,3 +52,40 @@ pub struct Transaction {
     /// Signature of the hash of the whole message
     signature: Option<String>,
 }
+
+/// A single operation to be stored on the chain
+/// Noticeable, enums in rust actually carry data in a 
+/// tuple-like structure (CreateUserAccount) or a dictionary-like (the ChangeStoreValue)
+#[derive(Clone, Debug, PartialEq)]
+pub enum TransactionData {
+
+    /// Will be used to store a new user account
+    CreateUserAccount (String),
+
+    /// Will be used to change or create an arbitrary value into an account
+    ChangeStoreValue {key: String, value: String},
+
+    /// Will  be used to move tokens from one owner to another
+    TransferTokens {to: String, amouont: u128},
+
+    /// Just create tokens out of nowhere
+    CreateTokens {receiver: String, amount: u128}
+
+    // ... Extend it as you wish, you get the idea
+}
+
+/// Represents an account on the blockchain
+/// This is basically the primary part of the " world state" of the blockchain
+/// It is the final status after performing all blocks in order
+#[derive(Clone, Debug)]
+pub struct Account {
+
+    /// We want the account to be able to store any information we want (Dictionary)
+    store: HashMap<String, String>,
+
+    /// store if this is a user account or something else
+    acc_type: AccountType,
+
+    /// Amount of tokens that account owns (like BTC or ETH)
+    tokens: u128,
+}
